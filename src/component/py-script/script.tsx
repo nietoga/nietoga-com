@@ -1,4 +1,4 @@
-export const PyScript = props => {
+export const PyScript = (props: any) => {
     // @ts-ignore
     return <py-script {...props}/>
 }

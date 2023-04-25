@@ -1,7 +1,11 @@
 import Head from "next/head";
 import Script from "next/script";
 
-export const PyScriptRuntime = ({children}) => {
+interface Props {
+    children: any
+}
+
+export const PyScriptRuntime = ({children}: Props) => {
     return <>
         <Head>
             <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css"/>

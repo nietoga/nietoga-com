@@ -1,4 +1,4 @@
-export const PyRepl = props => {
+export const PyRepl = (props: any) => {
     // @ts-ignore
     return <py-repl {...props} />
 }
