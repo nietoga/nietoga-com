@@ -1,6 +1,17 @@
-export const PyRepl = (props: any) => {
-    // @ts-ignore
-    return <py-repl {...props} />
+interface Props {
+    autoGenerate?: boolean,
+    output?: string,
+    children: any,
+}
+
+export const PyRepl = ({autoGenerate, output, children}: Props) => {
+    return <>
+        {/* @ts-ignore */}
+        <py-repl auto-generate={autoGenerate} output={output}>
+            {children}
+            {/* @ts-ignore */}
+        </py-repl>
+    </>
 }
 
 export default PyRepl;
