@@ -7,7 +7,7 @@ interface Props {
 export const PyRepl = ({autoGenerate, output, children}: Props) => {
     return <>
         {/* @ts-ignore */}
-        <py-repl auto-generate={autoGenerate} output={output}>
+        <py-repl auto-generate={autoGenerate || undefined} output={output}>
             {children}
             {/* @ts-ignore */}
         </py-repl>
