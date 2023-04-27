@@ -1,5 +1,5 @@
 {
-  "name": "nietoga-com",
+  "name": "@nietoga/nietoga-com",
   "version": "0.1.0",
   "private": true,
   "scripts": {
