@@ -1,5 +1,5 @@
-import { Form } from '@nietoga/nietoga-com/component/etl/form';
-import { Meta, Title } from '@nietoga/nietoga-com/component/page';
+import { Form } from '@nietoga/nietoga-com/components/etl/form';
+import { Meta, Title } from '@nietoga/nietoga-com/components/page';
 import { PythonProvider } from 'react-py';
 
 export const Index = () => {

@@ -1,4 +1,4 @@
-import { Meta, Title } from '@nietoga/nietoga-com/component/page';
+import { Meta, Title } from '@nietoga/nietoga-com/components/page';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './index.module.css';

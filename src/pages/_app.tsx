@@ -1,4 +1,4 @@
-import { Meta } from '@nietoga/nietoga-com/component/page';
+import { Meta } from '@nietoga/nietoga-com/components/page';
 import '@nietoga/nietoga-com/pages/globals.css';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
