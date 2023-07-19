@@ -1,3 +1,4 @@
+import { downloadFile } from '@nietoga/nietoga-com/utils/downloadFile';
 import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { usePython } from 'react-py';
@@ -13,21 +14,6 @@ newData = data[data["age"] > 18]
 newData.to_csv(root_folder + "/output_file.csv", index=False)
 `;
 
-const downloadFile = (filename: string, text: string) => {
-    const element = document.createElement('a');
-    element.setAttribute(
-        'href',
-        'data:text/plain;charset=utf-8,' + encodeURIComponent(text)
-    );
-    element.setAttribute('download', filename);
-
-    element.style.display = 'none';
-
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-};
-
 export const Form = () => {
     const { register, handleSubmit } = useForm();
     const {
@@ -40,15 +26,8 @@ export const Form = () => {
         stderr,
     } = usePython();
 
-    /**
-     * Cargar archivo
-     * Ejecutar
-     * Leer archivo
-     * Enviar a browser
-     */
-
     const onSubmit = useCallback(
-        async (data: object) => {
+        async (data: FormData) => {
             if (!isReady) {
                 console.log('skipping');
                 return;
@@ -56,16 +35,18 @@ export const Form = () => {
 
             const fr = new FileReader();
             fr.onload = async () => {
-                const fileContents = fr.result;
+                const fileContents = String(fr.result);
                 await writeFile('./input_file.csv', fileContents);
                 console.log('wrote file');
 
                 console.log('executing python');
                 await runPython(data.code);
 
-                readFile('./output_file.csv')?.then((data) =>
-                    downloadFile('output_file.csv', data)
+                // @ts-ignore
+                const outputContents: string = await readFile(
+                    './output_file.csv'
                 );
+                downloadFile('output_file.csv', outputContents);
             };
 
             fr.readAsText(data.input_file[0]);
