@@ -1,3 +1,5 @@
+import { downloadFile } from '@nietoga/nietoga-com/utils/downloadFile';
+import { readFile as readFileContents } from '@nietoga/nietoga-com/utils/readFile';
 import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { usePython } from 'react-py';
@@ -13,23 +15,14 @@ newData = data[data["age"] > 18]
 newData.to_csv(root_folder + "/output_file.csv", index=False)
 `;
 
-const downloadFile = (filename: string, text: string) => {
-    const element = document.createElement('a');
-    element.setAttribute(
-        'href',
-        'data:text/plain;charset=utf-8,' + encodeURIComponent(text)
-    );
-    element.setAttribute('download', filename);
-
-    element.style.display = 'none';
-
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-};
+interface FormData {
+    input_file: FileList;
+    code: string;
+}
 
 export const Form = () => {
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit } = useForm<FormData>();
+
     const {
         writeFile,
         readFile,
@@ -40,37 +33,19 @@ export const Form = () => {
         stderr,
     } = usePython();
 
-    /**
-     * Cargar archivo
-     * Ejecutar
-     * Leer archivo
-     * Enviar a browser
-     */
-
     const onSubmit = useCallback(
-        async (data: object) => {
-            if (!isReady) {
-                console.log('skipping');
-                return;
-            }
+        async (data: FormData) => {
+            const fileContents = await readFileContents(data.input_file[0]);
+            await writeFile('./input_file.csv', fileContents);
+            await runPython(data.code);
 
-            const fr = new FileReader();
-            fr.onload = async () => {
-                const fileContents = fr.result;
-                await writeFile('./input_file.csv', fileContents);
-                console.log('wrote file');
-
-                console.log('executing python');
-                await runPython(data.code);
-
-                readFile('./output_file.csv')?.then((data) =>
-                    downloadFile('output_file.csv', data)
-                );
-            };
-
-            fr.readAsText(data.input_file[0]);
+            // @ts-ignore
+            // The readFile method is not typed properly.
+            // Says it returns void, but it actually returns a string.
+            const outputContents: string = await readFile('./output_file.csv');
+            downloadFile('output_file.csv', outputContents);
         },
-        [isReady, readFile, runPython, writeFile]
+        [readFile, runPython, writeFile]
     );
 
     if (isRunning) {
@@ -86,6 +61,7 @@ export const Form = () => {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <label htmlFor="input_file">Input File: </label>
                 <input
+                    id="input_file"
                     type="file"
                     accept="text/csv"
                     {...register('input_file', { required: true })}
@@ -93,6 +69,7 @@ export const Form = () => {
                 <br />
                 <label htmlFor="code">Code: </label>
                 <textarea
+                    id="code"
                     {...register('code', { required: true })}
                     defaultValue={sampleCode}
                 />
@@ -103,12 +80,12 @@ export const Form = () => {
             <div>
                 <h1>Logs</h1>
                 <pre id="logs">{stdout}</pre>
+            </div>
+
+            <div>
                 <h1>Error logs</h1>
                 <pre id="logs">{stderr}</pre>
             </div>
-            <div></div>
         </>
     );
 };
-
-export default Form;

@@ -13,5 +13,3 @@ export const Title = ({ title }: Props) => {
         </Head>
     );
 };
-
-export default Title;
