@@ -12,5 +12,3 @@ export const Meta = ({ name, content }: Props) => {
         </Head>
     );
 };
-
-export default Meta;

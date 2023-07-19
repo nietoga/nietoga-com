@@ -12,5 +12,3 @@ export const downloadFile = (filename: string, text: string) => {
     element.click();
     document.body.removeChild(element);
 };
-
-export default downloadFile;

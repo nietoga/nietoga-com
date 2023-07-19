@@ -10,5 +10,3 @@ export const readFile = (file: Blob): Promise<string> => {
         fr.readAsText(file);
     });
 };
-
-export default readFile;
