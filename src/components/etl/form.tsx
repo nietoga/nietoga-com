@@ -14,8 +14,14 @@ newData = data[data["age"] > 18]
 newData.to_csv(root_folder + "/output_file.csv", index=False)
 `;
 
+interface FormData {
+    input_file: FileList;
+    code: string;
+}
+
 export const Form = () => {
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit } = useForm<FormData>();
+
     const {
         writeFile,
         readFile,
@@ -28,21 +34,16 @@ export const Form = () => {
 
     const onSubmit = useCallback(
         async (data: FormData) => {
-            if (!isReady) {
-                console.log('skipping');
-                return;
-            }
-
             const fr = new FileReader();
+
             fr.onload = async () => {
                 const fileContents = String(fr.result);
                 await writeFile('./input_file.csv', fileContents);
-                console.log('wrote file');
-
-                console.log('executing python');
                 await runPython(data.code);
 
                 // @ts-ignore
+                // The readFile method is not typed properly.
+                // Says it returns void, but it actually returns a string.
                 const outputContents: string = await readFile(
                     './output_file.csv'
                 );
@@ -51,7 +52,7 @@ export const Form = () => {
 
             fr.readAsText(data.input_file[0]);
         },
-        [isReady, readFile, runPython, writeFile]
+        [readFile, runPython, writeFile]
     );
 
     if (isRunning) {
@@ -67,6 +68,7 @@ export const Form = () => {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <label htmlFor="input_file">Input File: </label>
                 <input
+                    id="input_file"
                     type="file"
                     accept="text/csv"
                     {...register('input_file', { required: true })}
@@ -74,6 +76,7 @@ export const Form = () => {
                 <br />
                 <label htmlFor="code">Code: </label>
                 <textarea
+                    id="code"
                     {...register('code', { required: true })}
                     defaultValue={sampleCode}
                 />
@@ -84,10 +87,12 @@ export const Form = () => {
             <div>
                 <h1>Logs</h1>
                 <pre id="logs">{stdout}</pre>
+            </div>
+
+            <div>
                 <h1>Error logs</h1>
                 <pre id="logs">{stderr}</pre>
             </div>
-            <div></div>
         </>
     );
 };
