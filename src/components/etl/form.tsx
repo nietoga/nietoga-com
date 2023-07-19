@@ -1,4 +1,5 @@
 import { downloadFile } from '@nietoga/nietoga-com/utils/downloadFile';
+import { readFile as readFileContents } from '@nietoga/nietoga-com/utils/readFile';
 import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { usePython } from 'react-py';
@@ -34,23 +35,15 @@ export const Form = () => {
 
     const onSubmit = useCallback(
         async (data: FormData) => {
-            const fr = new FileReader();
+            const fileContents = await readFileContents(data.input_file[0]);
+            await writeFile('./input_file.csv', fileContents);
+            await runPython(data.code);
 
-            fr.onload = async () => {
-                const fileContents = String(fr.result);
-                await writeFile('./input_file.csv', fileContents);
-                await runPython(data.code);
-
-                // @ts-ignore
-                // The readFile method is not typed properly.
-                // Says it returns void, but it actually returns a string.
-                const outputContents: string = await readFile(
-                    './output_file.csv'
-                );
-                downloadFile('output_file.csv', outputContents);
-            };
-
-            fr.readAsText(data.input_file[0]);
+            // @ts-ignore
+            // The readFile method is not typed properly.
+            // Says it returns void, but it actually returns a string.
+            const outputContents: string = await readFile('./output_file.csv');
+            downloadFile('output_file.csv', outputContents);
         },
         [readFile, runPython, writeFile]
     );
