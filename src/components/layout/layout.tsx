@@ -1,6 +1,7 @@
 import { Container } from '@mui/material';
-import { ReactNode } from 'react';
-import { Navbar } from '../navbar/navbar';
+import React, { ReactNode } from 'react';
+
+import { Navbar } from '../navbar';
 
 interface LayoutProps {
     children?: ReactNode;
