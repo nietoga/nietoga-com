@@ -1,11 +1,25 @@
+import { CacheProvider, EmotionCache } from '@emotion/react';
+import CssBaseline from '@mui/material/CssBaseline';
+import { ThemeProvider } from '@mui/material/styles';
 import { Meta } from '@nietoga/nietoga-com/components/page';
-import '@nietoga/nietoga-com/pages/globals.css';
+import { theme } from '@nietoga/nietoga-com/themes/theme';
+import { createEmotionCache } from '@nietoga/nietoga-com/utils/createEmotionCache';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 
-const App = ({ Component, pageProps }: AppProps) => {
+const clientSideEmotionCache = createEmotionCache();
+
+export interface MyAppProps extends AppProps {
+    emotionCache?: EmotionCache;
+}
+
+const App = ({
+    Component,
+    emotionCache = clientSideEmotionCache,
+    pageProps,
+}: MyAppProps) => {
     return (
-        <>
+        <CacheProvider value={emotionCache}>
             <Meta
                 name="viewport"
                 content="width=device-width, initial-scale=1"
@@ -13,8 +27,11 @@ const App = ({ Component, pageProps }: AppProps) => {
             <Head>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <Component {...pageProps} />
-        </>
+            <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <Component {...pageProps} />
+            </ThemeProvider>
+        </CacheProvider>
     );
 };
 
