@@ -1,11 +1,10 @@
-import styles from './index.module.css';
-
-// Components
-import Image from 'next/image';
 import { Box } from '@mui/material';
+import Image from 'next/image';
+
 import { Layout } from '../../components/layout';
 import { Meta, Title } from '../../components/page';
 import { ProjectsList } from '../../components/projectsList/projectsList';
+import styles from './index.module.css';
 
 export const Home = () => {
     return (
