@@ -1,5 +1,5 @@
 import { Container } from '@mui/material';
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 import { Navbar } from '../navbar';
 
@@ -7,7 +7,7 @@ interface LayoutProps {
     children?: ReactNode;
 }
 
-export const Layout: React.FC<LayoutProps> = ({ children }) => {
+export const Layout = ({ children }: LayoutProps) => {
     return (
         <>
             <Navbar />
