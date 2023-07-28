@@ -1,8 +1,11 @@
-import { downloadFile } from '@nietoga/nietoga-com/utils/downloadFile';
-import { readFile as readFileContents } from '@nietoga/nietoga-com/utils/readFile';
-import { useCallback } from 'react';
+import { useRouter } from 'next/router';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { usePython } from 'react-py';
+
+import { CopyToClipboard } from '@nietoga/nietoga-com/components/copyToClipboard';
+import { downloadFile } from '@nietoga/nietoga-com/utils/downloadFile';
+import { readFile as readFileContents } from '@nietoga/nietoga-com/utils/readFile';
 
 const sampleCode = `
 import pandas as pd
@@ -21,7 +24,8 @@ interface FormData {
 }
 
 export const Form = () => {
-    const { register, handleSubmit } = useForm<FormData>();
+    const { register, getValues, setValue, handleSubmit } = useForm<FormData>();
+    const { query, route } = useRouter();
 
     const {
         writeFile,
@@ -32,6 +36,13 @@ export const Form = () => {
         stdout,
         stderr,
     } = usePython();
+
+    useEffect(() => {
+        if (!Array.isArray(query.code)) {
+            const code = query.code ?? '';
+            setValue('code', code);
+        }
+    }, [query.code, setValue]);
 
     const onSubmit = useCallback(
         async (data: FormData) => {
@@ -47,6 +58,14 @@ export const Form = () => {
         },
         [readFile, runPython, writeFile]
     );
+
+    const [generatedUrl, setGeneratedUrl] = useState<string>();
+
+    const generateUrl = useCallback(() => {
+        const data = getValues();
+        const code = encodeURIComponent(data.code);
+        setGeneratedUrl(`${route}?code=${code}`);
+    }, [route, getValues]);
 
     if (isRunning) {
         return <span>Running...</span>;
@@ -76,6 +95,12 @@ export const Form = () => {
                 <br />
                 <input type="submit" value="Submit" />
             </form>
+
+            <button type="button" onClick={generateUrl}>
+                Create Share URL
+            </button>
+
+            {generatedUrl ? <CopyToClipboard text={generatedUrl} /> : null}
 
             <div>
                 <h1>Logs</h1>
