@@ -7,17 +7,6 @@ import { CopyToClipboard } from '@nietoga/nietoga-com/components/copyToClipboard
 import { downloadFile } from '@nietoga/nietoga-com/utils/downloadFile';
 import { readFile as readFileContents } from '@nietoga/nietoga-com/utils/readFile';
 
-const sampleCode = `
-import pandas as pd
-
-root_folder = "."
-
-data = pd.read_csv(root_folder + "/input_file.csv")
-print(data)
-newData = data[data["age"] > 18]
-newData.to_csv(root_folder + "/output_file.csv", index=False)
-`;
-
 interface FormData {
     input_file: FileList;
     code: string;
@@ -87,11 +76,7 @@ export const Form = () => {
                 />
                 <br />
                 <label htmlFor="code">Code: </label>
-                <textarea
-                    id="code"
-                    {...register('code', { required: true })}
-                    defaultValue={sampleCode}
-                />
+                <textarea id="code" {...register('code', { required: true })} />
                 <br />
                 <input type="submit" value="Submit" />
             </form>
