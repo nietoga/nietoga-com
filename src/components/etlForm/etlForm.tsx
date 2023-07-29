@@ -1,3 +1,5 @@
+'use client';
+
 import { Button, CircularProgress, TextField, Typography } from '@mui/material';
 import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
@@ -21,14 +23,32 @@ print(data)
 newData = data[data["age"] > 18]
 newData.to_csv(root_folder + "/output_file.csv", index=False)
 `;
+const requiredErrorMsg = 'This field is required ';
 
 interface FormData {
-    input_file: FileList;
+    inputFile: FileList;
     code: string;
 }
 
 export const ETLForm = () => {
-    const { register, handleSubmit } = useForm<FormData>();
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<FormData>({
+        defaultValues: {
+            code: sampleCode,
+        },
+    });
+
+    const onInputError = (field: string) => {
+        if (errors[field as keyof typeof errors]) {
+            return {
+                error: true,
+                helperText: errors[field as keyof typeof errors]?.message,
+            };
+        }
+    };
 
     const {
         writeFile,
@@ -42,7 +62,7 @@ export const ETLForm = () => {
 
     const onSubmit = useCallback(
         async (data: FormData) => {
-            const fileContents = await readFileContents(data.input_file[0]);
+            const fileContents = await readFileContents(data.inputFile[0]);
             await writeFile('./input_file.csv', fileContents);
             await runPython(data.code);
 
@@ -83,12 +103,15 @@ export const ETLForm = () => {
                     ETL form
                 </Typography>
                 <div className={styles['field']}>
-                    <label htmlFor="input_file">File: </label>
+                    <label htmlFor="inputFile">File: </label>
                     <TextField
-                        id="input_file"
+                        id="inputFile"
                         type="file"
                         variant="standard"
-                        {...register('input_file', { required: true })}
+                        {...register('inputFile', {
+                            required: requiredErrorMsg,
+                        })}
+                        {...onInputError('inputFile')}
                     ></TextField>
                 </div>
 
@@ -96,14 +119,17 @@ export const ETLForm = () => {
                     header="code"
                     hiddenContent={
                         <TextField
-                            fullWidth
                             id="code"
+                            fullWidth
                             defaultValue={sampleCode}
                             placeholder="Enter your code here"
                             multiline
                             maxRows={10}
                             variant="filled"
-                            {...register('code', { required: true })}
+                            {...register('code', {
+                                required: requiredErrorMsg,
+                            })}
+                            {...onInputError('code')}
                         />
                     }
                 />
