@@ -6,5 +6,5 @@ interface LogsProps {
 }
 
 export const Logs = ({ title, logs }: LogsProps) => {
-    return <Collapsible header={title} hiddenContent={logs} />;
+    return <Collapsible header={title} hiddenContent={<pre>logs</pre>} />;
 };
