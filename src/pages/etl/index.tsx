@@ -1,7 +1,8 @@
-import { Form } from '@nietoga/nietoga-com/components/etl';
+import { PythonProvider } from 'react-py';
+
+import { ETLForm } from '@nietoga/nietoga-com/components/etlForm';
 import { Layout } from '@nietoga/nietoga-com/components/layout';
 import { Meta, Title } from '@nietoga/nietoga-com/components/page';
-import { PythonProvider } from 'react-py';
 
 export const Index = () => {
     return (
@@ -13,7 +14,7 @@ export const Index = () => {
             />
             <main>
                 <PythonProvider packages={{ official: ['pandas'] }}>
-                    <Form />
+                    <ETLForm />
                 </PythonProvider>
             </main>
         </Layout>
