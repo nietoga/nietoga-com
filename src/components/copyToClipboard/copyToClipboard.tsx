@@ -1,3 +1,4 @@
+import { ContentCopy } from '@mui/icons-material';
 import { Box, Button, Tooltip, Typography } from '@mui/material';
 import { useCallback, useState } from 'react';
 
@@ -36,7 +37,9 @@ export const CopyToClipboard = (props: Props) => {
                 onOpen={resetTooltipText}
                 placement="right"
             >
-                <Button onClick={handleCopyClick}>CopyIcon</Button>
+                <Button onClick={handleCopyClick}>
+                    <ContentCopy />
+                </Button>
             </Tooltip>
         </Box>
     );
