@@ -59,12 +59,12 @@ export const ETLForm = () => {
         }
     }, [query.code, setValue]);
 
-    const [generatedUrl, setGeneratedUrl] = useState<string>();
+    const [permalink, setPermalink] = useState<string>();
 
-    const generateUrl = useCallback(() => {
+    const generatePermalink = useCallback(() => {
         const data = getValues();
         const code = encodeURIComponent(data.code);
-        setGeneratedUrl(`${window.location.origin}/etl?code=${code}`);
+        setPermalink(`${window.location.origin}/etl?code=${code}`);
     }, [getValues]);
 
     const onSubmit = useCallback(
@@ -151,12 +151,12 @@ export const ETLForm = () => {
                     className={styles['button']}
                     type="button"
                     variant="contained"
-                    onClick={generateUrl}
+                    onClick={generatePermalink}
                 >
-                    Create URL
+                    Create Permalink
                 </Button>
 
-                {generatedUrl ? <CopyToClipboard text={generatedUrl} /> : null}
+                {permalink ? <CopyToClipboard text={permalink} /> : null}
 
                 <Logs title="Logs" logs={stdout} />
                 <Logs title="Error logs" logs={stderr} />
