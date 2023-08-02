@@ -1,0 +1,23 @@
+.etl-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin: auto;
+    width: 80%;
+}
+
+.button {
+    align-self: center;
+    width: fit-content;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+}
+
+.loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
