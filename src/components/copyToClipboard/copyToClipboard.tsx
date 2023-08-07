@@ -2,6 +2,8 @@ import { ContentCopy } from '@mui/icons-material';
 import { Box, Button, Tooltip, Typography } from '@mui/material';
 import { useCallback, useState } from 'react';
 
+import styles from './copyToClipboard.module.css';
+
 interface Props {
     text: string;
 }
@@ -21,17 +23,10 @@ export const CopyToClipboard = (props: Props) => {
     }, []);
 
     return (
-        <Box>
-            <Box
-                sx={{
-                    width: 100,
-                    overflow: 'hidden',
-                }}
-            >
-                <Typography variant="body1" noWrap>
-                    {text}
-                </Typography>
-            </Box>
+        <Box className={styles.container}>
+            <Typography variant="body1" noWrap sx={{ p: 1 }}>
+                {text}
+            </Typography>
             <Tooltip
                 title={tooltipText}
                 onOpen={resetTooltipText}
