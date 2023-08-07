@@ -1,10 +1,12 @@
 'use client';
 
 import { Button, CircularProgress, TextField, Typography } from '@mui/material';
-import { useCallback } from 'react';
+import { useRouter } from 'next/router';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { usePython } from 'react-py';
 
+import { CopyToClipboard } from '@nietoga/nietoga-com/components/copyToClipboard';
 import { downloadFile } from '@nietoga/nietoga-com/utils/downloadFile';
 import { readFile as readFileContents } from '@nietoga/nietoga-com/utils/readFile';
 
@@ -13,16 +15,6 @@ import { Logs } from '../logs';
 import styles from './etlForm.module.css';
 import { FormContainer } from './formContainer';
 
-const sampleCode = `
-import pandas as pd
-
-root_folder = "."
-
-data = pd.read_csv(root_folder + "/input_file.csv")
-print(data)
-newData = data[data["age"] > 18]
-newData.to_csv(root_folder + "/output_file.csv", index=False)
-`;
 const requiredErrorMsg = 'This field is required ';
 
 interface FormData {
@@ -34,12 +26,10 @@ export const ETLForm = () => {
     const {
         register,
         handleSubmit,
+        getValues,
+        setValue,
         formState: { errors },
-    } = useForm<FormData>({
-        defaultValues: {
-            code: sampleCode,
-        },
-    });
+    } = useForm<FormData>();
 
     const onInputError = (field: string) => {
         if (errors[field as keyof typeof errors]) {
@@ -59,6 +49,23 @@ export const ETLForm = () => {
         stdout,
         stderr,
     } = usePython();
+
+    const { query } = useRouter();
+
+    useEffect(() => {
+        if (!Array.isArray(query.code)) {
+            const code = query.code ?? '';
+            setValue('code', code);
+        }
+    }, [query.code, setValue]);
+
+    const [permalink, setPermalink] = useState<string>();
+
+    const generatePermalink = useCallback(() => {
+        const data = getValues();
+        const code = encodeURIComponent(data.code);
+        setPermalink(`${window.location.origin}/etl?code=${code}`);
+    }, [getValues]);
 
     const onSubmit = useCallback(
         async (data: FormData) => {
@@ -121,7 +128,6 @@ export const ETLForm = () => {
                         <TextField
                             id="code"
                             fullWidth
-                            defaultValue={sampleCode}
                             placeholder="Enter your code here"
                             multiline
                             maxRows={10}
@@ -141,6 +147,17 @@ export const ETLForm = () => {
                 >
                     Submit
                 </Button>
+                <Button
+                    className={styles['button']}
+                    type="button"
+                    variant="contained"
+                    onClick={generatePermalink}
+                >
+                    Create Permalink
+                </Button>
+
+                {permalink ? <CopyToClipboard text={permalink} /> : null}
+
                 <Logs title="Logs" logs={stdout} />
                 <Logs title="Error logs" logs={stderr} />
             </form>
