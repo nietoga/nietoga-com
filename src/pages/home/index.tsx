@@ -17,6 +17,8 @@ export const Home = () => {
                     alt="Silly image of a space cat throwing rainbows down its ass"
                     width={500}
                     height={500}
+                    placeholder="blur"
+                    blurDataURL="/images/nyan-cat.gif"
                 />
                 <ProjectsList />
             </Box>
