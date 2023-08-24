@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Layout } from '../../components/layout';
 import { Meta, Title } from '../../components/page';
 import { ProjectsList } from '../../components/projectsList/projectsList';
-import styles from './index.module.css';
+import styles from './home.module.css';
 
 export const Home = () => {
     return (

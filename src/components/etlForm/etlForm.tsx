@@ -31,11 +31,11 @@ export const ETLForm = () => {
         formState: { errors },
     } = useForm<FormData>();
 
-    const onInputError = (field: string) => {
-        if (errors[field as keyof typeof errors]) {
+    const onInputError = (field: keyof typeof errors) => {
+        if (errors[field]) {
             return {
                 error: true,
-                helperText: errors[field as keyof typeof errors]?.message,
+                helperText: errors[field]?.message,
             };
         }
     };

@@ -1,6 +1,8 @@
 import { Box, Typography } from '@mui/material';
-import { ProjectCard } from '../projectCard';
+
 import { PROJECTS } from '../../constants';
+import { ProjectCard } from '../projectCard';
+import styles from './projectList.module.css';
 
 export const ProjectsList = () => {
     return (
@@ -8,11 +10,11 @@ export const ProjectsList = () => {
             <Typography variant="h3" textAlign="center">
                 Projects
             </Typography>
-            <ul>
+            <Box className={styles.projectList}>
                 {PROJECTS.map((project) => (
                     <ProjectCard key={project.title} project={project} />
                 ))}
-            </ul>
+            </Box>
         </Box>
     );
 };
